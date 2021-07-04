@@ -1,0 +1,53 @@
+{
+    "Settings": {
+        "EnergyCost": 0.15,
+        "LaborRate": 30.0,
+        "FailureRate": 10.0
+    },
+    "Printers": {
+        "Elegoo Mars 2 Pro": {
+            "Name": "Elegoo Mars 2 Pro",
+            "Data": {
+                "Type": "Resin",
+                "Price": 300.0,
+                "DeprecationTime": 5000.0,
+                "ServiceCostRows": [
+                    {
+                        "Item": "FEP Film",
+                        "Price": 5.0,
+                        "LifeInterval": 1500.0
+                    },
+                    {
+                        "Item": "Screen",
+                        "Price": 30.0,
+                        "LifeInterval": 12000.0
+                    },
+                    {
+                        "Item": "Screen Misc",
+                        "Price": 20.0,
+                        "LifeInterval": 12000.0
+                    }
+                ],
+                "TotalServiceCost": 2250.0,
+                "EnergyConsumption": 1.0,
+                "DeprecationValue": 0.51,
+                "BedSize": {
+                    "Length": 115.0,
+                    "Width": 65.0,
+                    "Height": 149.0
+                }
+            }
+        }
+    },
+    "Materials": {
+        "Elegoo Standard Gray": {
+            "Name": "Elegoo Standard Gray",
+            "Data": {
+                "Price": 45.0,
+                "Qty": 1000.0,
+                "Type": "Resin",
+                "Description": ""
+            }
+        }
+    }
+}
