@@ -123,6 +123,13 @@ class PrinterDialog(Ui_PrinterDialog):
         bedSizeWidth = self.bedWidthDoubleSpinBox.value()
         bedSizeHeight = self.bedHeightDoubleSpinBox.value()
         
+        serviceCostItems = []
+        
+        for serviceCostRow in self.serviceCostCalcRows:
+            serviceCostRow["printerId"] = database.Printer.find_id_by_name(printerName)
+            serviceCostItem = database.ServiceCostItem.from_dictionary(serviceCostRow)
+            serviceCostItems.append(serviceCostItem)
+
         formData = {
             "bedSizeHeight": bedSizeHeight,
             "bedSizeLength": bedSizeLength,
@@ -134,6 +141,7 @@ class PrinterDialog(Ui_PrinterDialog):
             "name": printerName,
             "price": price,
             "totalServiceCost": totalServiceCost,
+            "serviceCostItems": serviceCostItems
         }
         
         return formData
@@ -167,11 +175,18 @@ class PrinterDialog(Ui_PrinterDialog):
         bedSizeLength = printer.bedSizeLength
         bedSizeWidth = printer.bedSizeWidth
         bedSizeHeight = printer.bedSizeHeight
-        
-        # TODO: Create serviceCostCalcRows.
+    
         self.serviceCostCalcRows = []
+        for item in database.ServiceCostItem.find_all_by_printer_id(printer.id):
+            self.serviceCostCalcRows.append(
+                {
+                    "id": item.id,
+                    "name": item.name,
+                    "price": item.price,
+                    "lifeInterval": item.lifeInterval
+                }
+            )
             
-        
         self.printerNameLineEdit.setText(printerName)
         self.printerTypeComboBox.setCurrentText(printerType)
         self.priceDoubleSpinBox.setValue(price)

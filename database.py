@@ -1,6 +1,6 @@
 import sqlite3
 
-connection = sqlite3.connect("test.db")
+connection = sqlite3.connect("3D_Print_Cost_Calculator.db")
 
 cursor = connection.cursor()
 
@@ -112,7 +112,7 @@ def create_blank_database():
     try:
         cursor.execute(
                 """
-                    CREATE TABLE "serviceCostCalcRow" (
+                    CREATE TABLE "serviceCostItems" (
                     "id"	INTEGER NOT NULL,
                     "lifeInterval"	REAL NOT NULL,
                     "name"	TEXT NOT NULL,
@@ -259,7 +259,125 @@ class MaterialType(object):
             for row in data:
                 objects.append(cls.from_name(row["name"]))
         return objects
+    
+class ServiceCostItem(object):
+    REQUIRED_KEYS = [
+            "id",
+            "lifeInterval",
+            "name",
+            "price",
+            "printerId"
+        ]
+    
+    def __init__(self, id, lifeInterval, name, price, printerId):
+        self.id = id
+        self.lifeInterval = lifeInterval
+        self.name = name
+        self.price = price
+        self.printerId = printerId
+    
+    def insert(self, printerId):
+        values = {
+            "lifeInterval": self.lifeInterval,
+            "name": self.name,
+            "price": self.price,
+            "printerId": printerId
+        }
         
+        cursor.execute(
+            """
+                INSERT INTO serviceCostItems ("lifeInterval", "name", "price", "printerId")
+
+                VALUES(:lifeInterval, :name, :price, :printerId)
+            """, values
+        )
+
+        self.id = cursor.lastrowid
+        connection.commit()
+    
+    def update(self, printerId):
+        values = {
+            "id": self.id,
+            "lifeInterval": self.lifeInterval,
+            "name": self.name,
+            "price": self.price,
+            "printerId": printerId
+        }
+        
+        cursor.execute(
+            """
+                UPDATE serviceCostItems SET lifeInterval = :lifeInterval, name = :name, price = :price, printerId = :printerId
+                WHERE id = :id
+            """, values
+        )
+
+        connection.commit()
+
+    def delete(self):
+        values = {"id": self.id}
+        cursor.execute("DELETE FROM serviceCostItems WHERE id = :id", values)
+
+        connection.commit()
+        self.id = 0
+    
+    @classmethod
+    def from_dictionary(cls, dictionary):
+        for key in cls.REQUIRED_KEYS:
+            if key not in dictionary.keys(): raise ValueError(f"serviceCostItem missing required key {key}")
+            
+        return cls(id = dictionary["id"],
+                   lifeInterval = dictionary["lifeInterval"],
+                   name = dictionary["name"],
+                   price = dictionary["price"],
+                   printerId = dictionary["printerId"])
+    
+    @classmethod
+    def from_name(cls, name, printerId):
+        cursor.execute(
+            "SELECT * FROM serviceCostItems WHERE name = :name  AND printerId = :printerId", {"name": name, "printerId": printerId}
+        )
+
+        columnNames = [row[0] for row in cursor.description]
+        
+        data = cursor.fetchall()
+        if data:
+            data = rows_to_dict(data, columnNames)[0]
+            return cls.from_dictionary(data)
+        else:
+            return None
+    
+    @classmethod
+    def find_all_by_printer_id(cls, printerId):
+        cursor.execute("SELECT * FROM serviceCostItems WHERE printerId = :printerId", {"printerId": printerId})
+
+        columnNames = [row[0] for row in cursor.description]
+        
+        data = cursor.fetchall()
+        data = rows_to_dict(data, columnNames)
+        
+        objects = []
+        if data:
+            for row in data:
+                objects.append(cls.from_dictionary(row))
+        
+        return objects
+    
+    @staticmethod
+    def find_id_by_name(name, printerId):
+        values = {"name": name,
+                  "printerId": printerId}
+        
+        cursor.execute("SELECT * FROM serviceCostItems WHERE name = :name AND printerId = :printerId", values)
+        
+        columnNames = [row[0] for row in cursor.description]
+        
+        data = cursor.fetchall()
+        if data:
+            data = rows_to_dict(data, columnNames)[0]
+            return data["id"]
+        else:
+            return 0
+    
         
 class Printer(object):
     REQUIRED_KEYS = [
@@ -272,10 +390,11 @@ class Printer(object):
             "materialTypeName",
             "name",
             "price",
-            "totalServiceCost"
+            "totalServiceCost",
+            "serviceCostItems"
         ]
     
-    def __init__(self, bedSizeHeight, bedSizeLength, bedSizeWidth, deprecationPerHour, deprecationTime, energyConsumption, materialType, name, price, totalServiceCost):
+    def __init__(self, bedSizeHeight, bedSizeLength, bedSizeWidth, deprecationPerHour, deprecationTime, energyConsumption, materialType, name, price, totalServiceCost, serviceCostItems):
         self.bedSizeHeight = bedSizeHeight
         self.bedSizeLength = bedSizeLength
         self.bedSizeWidth = bedSizeWidth
@@ -286,6 +405,7 @@ class Printer(object):
         self.name = name
         self.price = price
         self.totalServiceCost = totalServiceCost
+        self.serviceCostItems = serviceCostItems
         
         if not isinstance(self.materialType, MaterialType): raise TypeError("materialType must be of type MaterialType()")
     
@@ -324,6 +444,9 @@ class Printer(object):
                         :energyConsumption, :materialTypeId, :name, :price, :totalServiceCost)
             """, values
         )
+        
+        for serviceCostItem in self.serviceCostItems:
+            serviceCostItem.insert(self.id)
 
         connection.commit()
     
@@ -352,12 +475,18 @@ class Printer(object):
             """, values
         )
 
+        for serviceCostItem in self.serviceCostItems:
+            if serviceCostItem.id == 0:
+                serviceCostItem.insert(self.id)
+            else:
+                serviceCostItem.update(self.id)
+            
         connection.commit()
     
     def delete(self, id):
         values = {"id": id}
+        cursor.execute("DELETE FROM serviceCostItems WHERE printerId = :id", values)
         cursor.execute("DELETE FROM printer WHERE id = :id", values)
-
         connection.commit()
         
     @classmethod
@@ -374,7 +503,8 @@ class Printer(object):
                     materialType = MaterialType.from_name(dictionary["materialTypeName"]),
                     name = dictionary["name"],
                     price = dictionary["price"],
-                    totalServiceCost = dictionary["totalServiceCost"])
+                    totalServiceCost = dictionary["totalServiceCost"],
+                    serviceCostItems = dictionary["serviceCostItems"])
     
     @classmethod
     def from_name(cls, name):
@@ -387,16 +517,9 @@ class Printer(object):
         data = cursor.fetchall()
         if data:
             data = rows_to_dict(data, columnNames)[0]
-            return cls(bedSizeHeight = data["bedSizeHeight"],
-                       bedSizeLength = data["bedSizeLength"],
-                       bedSizeWidth = data["bedSizeWidth"],
-                       deprecationPerHour = data["deprecationPerHour"],
-                       deprecationTime = data["deprecationTime"],
-                       energyConsumption = data["energyConsumption"],
-                       materialType = MaterialType.from_id(data["materialTypeId"]),
-                       name = data["name"],
-                       price = data["price"],
-                       totalServiceCost = data["totalServiceCost"])
+            data["materialTypeName"] = MaterialType.from_id(data["materialTypeId"]).name
+            data["serviceCostItems"] = ServiceCostItem.find_all_by_printer_id(data["id"])
+            return cls.from_dictionary(data)
         else:
             return None
     
@@ -415,6 +538,21 @@ class Printer(object):
                 objects.append(cls.from_name(row["name"]))
         
         return objects
+
+    @staticmethod
+    def find_id_by_name(name):
+        values = {"name": name}
+        
+        cursor.execute("SELECT * FROM printer WHERE name = :name", values)
+        
+        columnNames = [row[0] for row in cursor.description]
+        
+        data = cursor.fetchall()
+        if data:
+            data = rows_to_dict(data, columnNames)[0]
+            return data["id"]
+        else:
+            return 0
         
 class Material(object):
     REQUIRED_KEYS = [
@@ -498,12 +636,9 @@ class Material(object):
         
         data = cursor.fetchall()
         data = rows_to_dict(data, columnNames)[0]
+        data["materialTypeName"] = MaterialType.from_id(data["materialTypeId"]).name
         if data:
-            return cls(description = data["description"],
-                       materialType = MaterialType.from_id(data["materialTypeId"]),
-                       name = data["name"],
-                       price = data["price"],
-                       quantity = data["quantity"])
+            return cls.from_dictionary(data)
         else:
             return None
     
