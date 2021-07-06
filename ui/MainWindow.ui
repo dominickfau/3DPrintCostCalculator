@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>3D Print Cost Calculator</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="Resource.qrc">
+    <normaloff>:/Small Icons/Icons/Prigram_Icon.png</normaloff>:/Small Icons/Icons/Prigram_Icon.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_5">
     <item>

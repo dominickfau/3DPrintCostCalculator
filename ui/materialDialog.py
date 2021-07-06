@@ -15,6 +15,9 @@ class Ui_MaterialDialog(object):
     def setupUi(self, MaterialDialog):
         MaterialDialog.setObjectName("MaterialDialog")
         MaterialDialog.resize(359, 226)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/Small Icons/Icons/Prigram_Icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MaterialDialog.setWindowIcon(icon)
         self.verticalLayout = QtWidgets.QVBoxLayout(MaterialDialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.formLayout = QtWidgets.QFormLayout()
@@ -79,3 +82,4 @@ class Ui_MaterialDialog(object):
         self.qtyPerPriceLabel.setText(_translate("MaterialDialog", "Qty per Price:"))
         self.qtyPerPriceDoubleSpinBox.setSuffix(_translate("MaterialDialog", " g"))
         self.saveMaterialButton.setText(_translate("MaterialDialog", "Save"))
+from . import Resource_rc

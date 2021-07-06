@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="Small Icons">
+    <file>Icons/Prigram_Icon.png</file>
     <file>Icons/Calculator_Icon.png</file>
     <file>Icons/Kitchen_Scale_Icon.png</file>
     <file>Icons/Price_Quote_Icon.png</file>

@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Material</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="Resource.qrc">
+    <normaloff>:/Small Icons/Icons/Prigram_Icon.png</normaloff>:/Small Icons/Icons/Prigram_Icon.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QFormLayout" name="formLayout">
@@ -111,7 +115,9 @@
   <tabstop>materialDescriptionTextEdit</tabstop>
   <tabstop>saveMaterialButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="Resource.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>saveMaterialButton</sender>

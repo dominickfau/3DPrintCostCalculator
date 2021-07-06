@@ -15,6 +15,9 @@ class Ui_SettingsDialog(object):
     def setupUi(self, SettingsDialog):
         SettingsDialog.setObjectName("SettingsDialog")
         SettingsDialog.resize(400, 132)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/Small Icons/Icons/Prigram_Icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        SettingsDialog.setWindowIcon(icon)
         self.verticalLayout = QtWidgets.QVBoxLayout(SettingsDialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.formLayout = QtWidgets.QFormLayout()
@@ -65,3 +68,4 @@ class Ui_SettingsDialog(object):
         self.failureRateDoubleSpinBox.setSuffix(_translate("SettingsDialog", " %"))
         self.energyCostDoubleSpinBox.setSuffix(_translate("SettingsDialog", " $/kWh"))
         self.savePrinterButton.setText(_translate("SettingsDialog", "Save"))
+from . import Resource_rc

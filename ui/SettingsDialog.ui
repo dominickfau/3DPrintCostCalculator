@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Settings</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="Resource.qrc">
+    <normaloff>:/Small Icons/Icons/Prigram_Icon.png</normaloff>:/Small Icons/Icons/Prigram_Icon.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QFormLayout" name="formLayout">
@@ -93,7 +97,9 @@
   <tabstop>failureRateDoubleSpinBox</tabstop>
   <tabstop>savePrinterButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="Resource.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>savePrinterButton</sender>

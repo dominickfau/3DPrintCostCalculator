@@ -15,6 +15,9 @@ class Ui_CalculateServiceCostDialog(object):
     def setupUi(self, CalculateServiceCostDialog):
         CalculateServiceCostDialog.setObjectName("CalculateServiceCostDialog")
         CalculateServiceCostDialog.resize(442, 291)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/Small Icons/Icons/Prigram_Icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        CalculateServiceCostDialog.setWindowIcon(icon)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(CalculateServiceCostDialog)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.verticalLayout = QtWidgets.QVBoxLayout()
@@ -62,3 +65,4 @@ class Ui_CalculateServiceCostDialog(object):
         item = self.itemsTableWidget.horizontalHeaderItem(2)
         item.setText(_translate("CalculateServiceCostDialog", "Life Interval (min)"))
         self.saveButton.setText(_translate("CalculateServiceCostDialog", "Save"))
+from . import Resource_rc
