@@ -11,7 +11,7 @@ from materialDialog import MaterialDialog
 from settingsDialog import SettingsDialog
 
 
-PROGRAM_NAME = ""
+PROGRAM_NAME = "3D Print Cost Calculator"
 
 class Window(QMainWindow):
     def __init__(self, parent=None):
