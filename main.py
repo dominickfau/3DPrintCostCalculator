@@ -18,15 +18,9 @@ class Window(QMainWindow):
         super().__init__(parent)
         self.mainWindow = Ui_MainWindow()
         self.mainWindow.setupUi(self)
-
-        self.saveDataFile = "saveData.json"
-        self.printers = {}
-        self.materials = {}
-        self.settings = {}
         
         self.printerDialog = PrinterDialog()
         self.printerDialog.connectSignalsSlots()
-        
         
         self.materialDialog= MaterialDialog()
         self.materialDialog.connectSignalsSlots()
