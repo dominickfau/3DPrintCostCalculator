@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>755</width>
+    <width>735</width>
     <height>570</height>
    </rect>
   </property>
@@ -42,7 +42,7 @@
            <item>
             <widget class="QPushButton" name="printerAddButton">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string/>
@@ -98,7 +98,7 @@
            <item>
             <widget class="QPushButton" name="materialAddButton">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string/>
@@ -737,11 +737,6 @@
       </item>
       <item>
        <widget class="QGroupBox" name="quoteGroupBox">
-        <property name="font">
-         <font>
-          <pointsize>16</pointsize>
-         </font>
-        </property>
         <property name="title">
          <string>Quote</string>
         </property>
@@ -854,7 +849,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>755</width>
+     <width>735</width>
      <height>21</height>
     </rect>
    </property>
